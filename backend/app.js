@@ -4,14 +4,14 @@ const express = require('express');
 //***application express  ce qui permet de créer applmication express******/
 const app = express();
 //***npms install --save mongoose */
-//const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 // ********** se connecter a mongo ************************************************************************//
-/*mongoose.connect('mongodb+srv://bounise:159Alex13@cluster0.1cpua.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+mongoose.connect('mongodb+srv://bounise1:159Alex13@cluster0.1cpua.mongodb.net/Cluster0?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));*/
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 
 
