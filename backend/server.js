@@ -1,5 +1,9 @@
+//importer le package HTTP de NODE JS pour avoir les outils pour créer le server
 const http = require('http');
+//importer l'application aa.js
 const app = require('./app');
+
+
 
 //**la fonction normalizePort renvoie un port valide, qu'il soit fourni sous la forme d'un numéro ou d'une chaîne */
 const normalizePort = val => {

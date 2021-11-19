@@ -3,15 +3,24 @@ const bcrypt = require('bcrypt');
 //**npm install --save jsonwebtoken */
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+//importation de crypto pour chiffrer le mail npm install --save crypto-js
+const cryptojs = require('crypto-js');
+
+//importation pour utiliser les variables d'environnements (fichier .env)
+const dotenv = require('dotenv');
+const result = dotenv.config();
+
 
 //***function signup qui va crypté le password (brcrypt.hash) */
 //***cette function va crypter le  password et  créer un nouveau utilisateur (user)*/
 /**en prenant le password crypté + email  et l'enregistré ---> save()*/
 exports.signup = (req, res, next) => {
+  //chiffrer Email avant de l'envoyer dans la base de donnée
+const emailCryptoJs = cryptojs.HmacSHA256(req.body.email, `${process.env.CRYPTOJS_EMAIL}`).toString();
     bcrypt.hash(req.body.password, 10)
     .then(hash => {
         const user = new User ({
-            email: req.body.email,
+            email: emailCryptoJs ,
             password: hash
         });
         user.save()
@@ -20,6 +29,7 @@ exports.signup = (req, res, next) => {
     })
     .catch(error => res.status(500).json({ error }));
 };
+
 
 
 //******On recupère un user de la base de données, si user introuvable return (401) */
@@ -50,4 +60,3 @@ exports.login = (req, res, next) => {
     })
     .catch(error => res.status(500).json({ error }));
 };
-
