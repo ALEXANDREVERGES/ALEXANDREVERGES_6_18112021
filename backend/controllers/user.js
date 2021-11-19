@@ -36,7 +36,8 @@ const emailCryptoJs = cryptojs.HmacSHA256(req.body.email, `${process.env.CRYPTOJ
 //*****On compare le mot de passe entré avec le hash (bcrypt.compare), si la comparaison n'est pas bonne (401)*/
 //*****Sinon si la comparaison est bonne, utilisateur a rentré des bonnes informations et on renvoie un userID et token  */
 exports.login = (req, res, next) => {
-    User.findOne({ email: req.body.email })
+  const emailCryptoJs = cryptojs.HmacSHA256(req.body.email, `${process.env.CRYPTOJS_EMAIL}`).toString();
+    User.findOne({ email: emailCryptoJs })
     .then(user => {
       if (!user) {
         return res.status(401).json({ error: 'Utilisateur non trouvé !' });
