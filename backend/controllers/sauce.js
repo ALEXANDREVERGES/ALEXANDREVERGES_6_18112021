@@ -4,19 +4,17 @@ const fs = require('fs');
 
 
 exports.createSauce = (req, res, next) => {
-    const newSauce = new sauce({
-      userId: req.body.userId,
-      name: req.body.name,
-      manufacturer: req.body.manufacturer,
-      description: req.body.description,
-      mainPepper: req.body.mainPepper,
-      heat: req.body.heat,
-      likes: req.body.likes,
-      dislikes: req.body.displikes,
-      usersLiked: req.body.userLiked,
-      usersDisliked: req.body.usersDisliked,
-      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    });
+  const sauceObject = JSON.parse(req.body.sauce);
+  delete sauceObject._id;
+  const newSauce = new sauce({
+    ...sauceObject,
+    // On modifie l'URL de l'image, on veut l'URL complète, quelque chose dynamique avec les segments de l'URL
+    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+    likes: 0,
+    dislikes: 0,
+    usersLiked: [],
+    usersDisliked: []
+  });
     newSauce.save()
     .then(() => res.status(201).json({ message: 'Sauce enregistrée !'}))
     .catch(error => res.status(400).json({ error }));
