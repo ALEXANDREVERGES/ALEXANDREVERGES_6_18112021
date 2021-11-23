@@ -8,6 +8,7 @@ const cryptojs = require('crypto-js');
 
 //importation pour utiliser les variables d'environnements (fichier .env)
 const dotenv = require('dotenv');
+
 require('dotenv').config();
 
 
@@ -16,11 +17,11 @@ require('dotenv').config();
 /**en prenant le password crypté + email  et l'enregistré ---> save()*/
 exports.signup = (req, res, next) => {
   //chiffrer Email avant de l'envoyer dans la base de donnée
-const emailCryptoJs = cryptojs.HmacSHA256(req.body.email, `${process.env.CRYPTOJS_EMAIL}`).toString();
+//const emailCryptoJs = cryptojs.HmacSHA256(req.body.email, `${process.env.CRYPTOJS_EMAIL}`).toString();
     bcrypt.hash(req.body.password, 10)
     .then(hash => {
         const user = new User ({
-            email: emailCryptoJs ,
+            email: req.body.email ,
             password: hash
         });
         user.save()
@@ -36,8 +37,8 @@ const emailCryptoJs = cryptojs.HmacSHA256(req.body.email, `${process.env.CRYPTOJ
 //*****On compare le mot de passe entré avec le hash (bcrypt.compare), si la comparaison n'est pas bonne (401)*/
 //*****Sinon si la comparaison est bonne, utilisateur a rentré des bonnes informations et on renvoie un userID et token  */
 exports.login = (req, res, next) => {
-  const emailCryptoJs = cryptojs.HmacSHA256(req.body.email, `${process.env.CRYPTOJS_EMAIL}`).toString();
-    User.findOne({ email: emailCryptoJs })
+  //const emailCryptoJs = cryptojs.HmacSHA256(req.body.email, `${process.env.CRYPTOJS_EMAIL}`).toString();
+    User.findOne({ email: req.body.email })
     .then(user => {
       if (!user) {
         return res.status(401).json({ error: 'Utilisateur non trouvé !' });
@@ -52,9 +53,13 @@ exports.login = (req, res, next) => {
             //*****utilisation .sign pour encoder un nouveau token */
             token: jwt.sign(
               { userId: user._id },
-              process.env.JWT_RANDOM_TOKEN,
+              'RANDOM_TOKEN_SECRET',
               { expiresIn: '24h' }
-            )
+            ) //jwt.sign(
+             // { userId: user._id },
+             // process.env.JWT_RANDOM_TOKEN,
+             // { expiresIn: '24h' }
+            //)
           });
         })
         .catch(error => res.status(500).json({ error }));

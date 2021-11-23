@@ -21,6 +21,9 @@ mongoose.connect(
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 //***application express  ce qui permet de créer applmication express******/
 const app = express();
+//transformer le corp (body) en json (objet JS utilisable)
+// indique à l'app d'utiliser la méthode json de bodyParser pour lire les requêtes du body
+app.use(bodyParser.json());
 app.use(morgan('dev'));
 //gérer les problèmes de CORS (Cross - Origin - Request - Sharing)
 app.use((req, res, next) => {
@@ -30,9 +33,7 @@ app.use((req, res, next) => {
   next();
 });
 
-//transformer le corp (body) en json (objet JS utilisable)
-// indique à l'app d'utiliser la méthode json de bodyParser pour lire les requêtes du body
-app.use(bodyParser.json());
+
 /*
 app.use((req, res, next) => {
   console.log('requête reçue !');
