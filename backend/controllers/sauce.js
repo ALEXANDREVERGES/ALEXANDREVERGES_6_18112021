@@ -8,7 +8,6 @@ exports.createSauce = (req, res, next) => {
   delete sauceObject._id;
   const newSauce = new sauce({
     ...sauceObject,
-    // On modifie l'URL de l'image, on veut l'URL complète, quelque chose dynamique avec les segments de l'URL
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
     likes: 0,
     dislikes: 0,
@@ -51,47 +50,48 @@ exports.getOneSauce = (req, res, next) => {
       .then(newSauce => res.status(200).json(newSauce))
       .catch(error => res.status(404).json({ error }));
   };    
+
+  // 3 conditions possible car voici ce qu'on reçoit du frontend, la valeur du like est soit: 0, 1 ou -1 (req.body.like) 
 exports.likesSauces = (req, res, next) => {
+  // Like présent dans le body
     let like = req.body.like
+      // On prend le userID
     let userId = req.body.userId
+    // On prend l'id de la sauce
     let sauceId = req.params.id
-
     switch (like) {
-
-        case 1 :
+        case 1 :   //cas: req.body.like = 1
             sauce.updateOne(
-            { _id: sauceId },
-            { $push: { usersLiked: userId }, $inc: { likes: +1 }})
+            { _id: sauceId },  // on recherche la sauce avec le _id
+            { $push: { usersLiked: userId }, // on ajoute l'utilisateur dans le array usersLiked.
+             $inc: { likes: +1 }})           // incrémentaton de la valeur de likes par 1 (+1).
             .then(() => res.status(200).json({ message: "Vous avez mis un like sur la sauce." }))
-            .catch((error) => res.status(400).json({ error }))
+            .catch((error) => res.status(400).json({ error })) //code 400: bad request
         break;
-
-        case 0 :
+        case 0 :    //cas: req.body.like = 0
             sauce.findOne({ _id: sauceId }) 
             .then((sauce) => {
-                if(sauce.usersLiked.includes(userId)) {
-                    sauce.updateOne(
-                    { _id: sauceId },
-                    { $push: { usersLiked: userId }, $inc: { likes: -1 }})
+                if(sauce.usersLiked.includes(userId)) { // on cherche si l'utilisateur est déjà dans le tableau usersLiked
+                    sauce.updateOne(                     
+                    { _id: sauceId }, // on recherche la sauce avec le _id
+                    { $push: { usersLiked: userId }, $inc: { likes: -1 }}) // on décremente de 1 (-1) au like.
                     .then(() => res.status(200).json({ message: "Votre like a été supprimé" }))
                     .catch((error) => res.status(400).json({ error }))
                 }
-
-                if(sauce.usersDisliked.includes(userId)) {
+                if(sauce.usersDisliked.includes(userId)) { // on cherche si l'utilisateur est déjà dans le tableau usersDisliked
                     sauce.updateOne(
-                    { _id: sauceId },
-                    { $push: { usersLiked: userId }, $inc: { dislikes: -1 }})
+                    { _id: sauceId }, // on recherche la sauce avec le _id
+                    { $push: { usersLiked: userId }, $inc: { dislikes: -1 }}) //on ajoute -1 au dislike
                     .then(() => res.status(200).json({ message: "Votre dislike a été supprimé" }))
                     .catch((error) => res.status(400).json({ error }))
                 }
             })
             .catch((error) => res.status(400).json({ error }))
         break;
-
         case -1 :
             sauce.updateOne(
-            { _id: sauceId },
-            { $push: { usersLiked: userId }, $inc: { dislikes: +1 }})
+            { _id: sauceId }, // on recherche la sauce avec le _id présent dans la requête
+            { $push: { usersLiked: userId }, $inc: { dislikes: +1 }}) //on ajoute +1 au dislike
             .then(() => res.status(200).json({ message: "Vous avez mis un dislike sur la sauce." }))
             .catch((error) => res.status(400).json({ error }))
         break;
