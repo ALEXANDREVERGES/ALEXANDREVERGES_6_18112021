@@ -7,7 +7,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 //model de base pour enregistré un nouvel utilisateur
 const userSchema = mongoose.Schema({
     email:{ type: String, required: true, unique: true},
-    password : { type: String, required: true}
+    password : { type: String, required: true},
 });
 //****permet de ne pas avoir plusieurs utilisateurs avec la même adresse mail */
 userSchema.plugin(uniqueValidator);

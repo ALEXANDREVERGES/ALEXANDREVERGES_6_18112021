@@ -8,7 +8,7 @@ const cryptojs = require('crypto-js');
 
 //importation pour utiliser les variables d'environnements (fichier .env)
 const dotenv = require('dotenv');
-const result = dotenv.config();
+require('dotenv').config();
 
 
 //***function signup qui va crypté le password (brcrypt.hash) */
@@ -52,7 +52,7 @@ exports.login = (req, res, next) => {
             //*****utilisation .sign pour encoder un nouveau token */
             token: jwt.sign(
               { userId: user._id },
-              'RANDOM_TOKEN_SECRET',
+              process.env.JWT_RANDOM_TOKEN,
               { expiresIn: '24h' }
             )
           });

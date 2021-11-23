@@ -1,3 +1,5 @@
+//npm install --save password-validator
+//permet de "paramétrer" le mot de passe
 const passwordValidator = require('password-validator');
 
 const passwordSchema = new passwordValidator();

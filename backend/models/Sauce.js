@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 //donner un schéma sauce a la base de donnée mongDB
 //model de base pour enregistré une nouvelle sauce
@@ -16,5 +16,5 @@ const sauceSchema = mongoose.Schema({
   usersDisliked: { type: [String], required: true},
 })
 
-//exportation du module
+//exportation du module pour utiliser le model
 module.exports = mongoose.model('Sauce', sauceSchema);
