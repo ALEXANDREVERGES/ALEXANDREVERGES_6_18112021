@@ -19,7 +19,7 @@ mongoose.connect(
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
-//***application express  ce qui permet de créer applmication express******/
+//***application express  ce qui permet de créer application express******/
 const app = express();
 //transformer le corp (body) en json (objet JS utilisable)
 // indique à l'app d'utiliser la méthode json de bodyParser pour lire les requêtes du body

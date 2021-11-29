@@ -53,13 +53,14 @@ exports.getOneSauce = (req, res, next) => {
 
   // 3 conditions possible car voici ce qu'on reçoit du frontend, la valeur du like est soit: 0, 1 ou -1 (req.body.like) 
 exports.likesSauces = (req, res, next) => {
+// la doc nous dit usersLiked =[string]
   // Like présent dans le body
     let like = req.body.like
       // On prend le userID
     let userId = req.body.userId
     // On prend l'id de la sauce
     let sauceId = req.params.id
-    switch (like) {
+    switch (like) { //L'instruction switch évalue une expression et, selon le résultat obtenu et le cas associé, exécute les instructions correspondantes.
         case 1 :   //cas: req.body.like = 1
             sauce.updateOne(
             { _id: sauceId },  // on recherche la sauce avec le _id
@@ -67,21 +68,25 @@ exports.likesSauces = (req, res, next) => {
              $inc: { likes: +1 }})           // incrémentaton de la valeur de likes par 1 (+1).
             .then(() => res.status(200).json({ message: "Vous avez mis un like sur la sauce." }))
             .catch((error) => res.status(400).json({ error })) //code 400: bad request
-        break;
+        break; //L'instruction break permet de terminer la boucle en cours ou l'instruction switch ou label en cours 
+               //et de passer le contrôle du programme à l'instruction suivant l'instruction terminée.
         case 0 :    //cas: req.body.like = 0
             sauce.findOne({ _id: sauceId }) 
             .then((sauce) => {
                 if(sauce.usersLiked.includes(userId)) { // on cherche si l'utilisateur est déjà dans le tableau usersLiked
                     sauce.updateOne(                     
                     { _id: sauceId }, // on recherche la sauce avec le _id
-                    { $push: { usersLiked: userId }, $inc: { likes: -1 }}) // on décremente de 1 (-1) au like.
+                    { $push: { usersLiked: userId }, // on ajoute l'utilisateur dans le array usersLiked
+                     $inc: { likes: -1 }}) // on décremente de 1 (-1) au like.
                     .then(() => res.status(200).json({ message: "Votre like a été supprimé" }))
                     .catch((error) => res.status(400).json({ error }))
                 }
+            
                 if(sauce.usersDisliked.includes(userId)) { // on cherche si l'utilisateur est déjà dans le tableau usersDisliked
                     sauce.updateOne(
                     { _id: sauceId }, // on recherche la sauce avec le _id
-                    { $push: { usersLiked: userId }, $inc: { dislikes: -1 }}) //on ajoute -1 au dislike
+                    { $push: { usersDisliked: userId },  // on ajoute l'utilisateur dans le array usersDisliked
+                    $inc: { dislikes: -1 }}) //on ajoute -1 au dislike
                     .then(() => res.status(200).json({ message: "Votre dislike a été supprimé" }))
                     .catch((error) => res.status(400).json({ error }))
                 }
@@ -91,7 +96,8 @@ exports.likesSauces = (req, res, next) => {
         case -1 :
             sauce.updateOne(
             { _id: sauceId }, // on recherche la sauce avec le _id présent dans la requête
-            { $push: { usersLiked: userId }, $inc: { dislikes: +1 }}) //on ajoute +1 au dislike
+            { $push: { usersDisliked: userId }, // on ajoute l'utilisateur dans le array usersDisliked
+             $inc: { dislikes: +1 }}) //on ajoute +1 au dislike
             .then(() => res.status(200).json({ message: "Vous avez mis un dislike sur la sauce." }))
             .catch((error) => res.status(400).json({ error }))
         break;

@@ -53,13 +53,9 @@ exports.login = (req, res, next) => {
             //*****utilisation .sign pour encoder un nouveau token */
             token: jwt.sign(
               { userId: user._id },
-              'RANDOM_TOKEN_SECRET',
+              `${process.env.JWT_RANDOM_TOKEN}`,
               { expiresIn: '24h' }
-            ) //jwt.sign(
-             // { userId: user._id },
-             // process.env.JWT_RANDOM_TOKEN,
-             // { expiresIn: '24h' }
-            //)
+            ) 
           });
         })
         .catch(error => res.status(500).json({ error }));
