@@ -3,8 +3,7 @@ const bcrypt = require('bcrypt');
 //**npm install --save jsonwebtoken */
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-//importation de crypto pour chiffrer le mail npm install --save crypto-js
-const cryptojs = require('crypto-js');
+
 
 //importation pour utiliser les variables d'environnements (fichier .env)
 const dotenv = require('dotenv');
@@ -37,7 +36,7 @@ exports.signup = (req, res, next) => {
 //*****On compare le mot de passe entré avec le hash (bcrypt.compare), si la comparaison n'est pas bonne (401)*/
 //*****Sinon si la comparaison est bonne, utilisateur a rentré des bonnes informations et on renvoie un userID et token  */
 exports.login = (req, res, next) => {
-  //const emailCryptoJs = cryptojs.HmacSHA256(req.body.email, `${process.env.CRYPTOJS_EMAIL}`).toString();
+  
     User.findOne({ email: req.body.email })
     .then(user => {
       if (!user) {
