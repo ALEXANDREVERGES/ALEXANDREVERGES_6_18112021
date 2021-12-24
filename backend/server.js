@@ -1,6 +1,6 @@
 //importer le package HTTP de NODE JS pour avoir les outils pour créer le server
 const http = require('http');
-//importer l'application aa.js
+//importer l'application app.js
 const app = require('./app');
 
 

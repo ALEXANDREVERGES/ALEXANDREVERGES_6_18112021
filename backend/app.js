@@ -24,6 +24,7 @@ const app = express();
 //transformer le corp (body) en json (objet JS utilisable)
 // indique à l'app d'utiliser la méthode json de bodyParser pour lire les requêtes du body
 app.use(bodyParser.json());
+
 //utilisation morgan pour avoir les retours des reponses dans le terminal
 app.use(morgan('dev'));
 //gérer les problèmes de CORS (Cross - Origin - Request - Sharing)
@@ -34,10 +35,12 @@ app.use((req, res, next) => {
   next();
 });
 
+// Parse de express
 
 //************************************************************************************************************************** */
+app.use('/images', express.static(path.join(__dirname , 'images')));
 app.use('/api/auth', userRoutes);
 app.use('/api/sauces', sauceRoutes);
-app.use('/images', express.static(path.join(__dirname, 'images')));
+
 //*****exporter application pour qu'on puisse y accéder depuis nos autres fichiers **** */
 module.exports = app;
